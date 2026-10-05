@@ -49,3 +49,10 @@ jobs:
         run: docker build -t ci-practice-tests .
       - name: Run tests in container
         run: docker run --rm ci-practice-tests
+
+  deploy-staging:
+    needs: [unit, docker-tests]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Деплой на staging выполнен (имитация)"
