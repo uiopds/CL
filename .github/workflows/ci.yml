@@ -20,10 +20,21 @@ jobs:
   unit:
     needs: lint
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: ${{ matrix.python-version }}
       - run: pip install -r requirements.txt
-      - run: pytest -v
+      - run: |
+          mkdir -p reports
+          pytest -v --junitxml=reports/junit-${{ matrix.python-version }}.xml
+      - name: Upload JUnit report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: junit-report-${{ matrix.python-version }}
+          path: reports/junit-${{ matrix.python-version }}.xml
