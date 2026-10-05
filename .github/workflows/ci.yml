@@ -22,19 +22,19 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.11", "3.12"]
+        group: [1, 2]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.12"
       - run: pip install -r requirements.txt
       - run: |
           mkdir -p reports
-          pytest -v --junitxml=reports/junit-${{ matrix.python-version }}.xml
+          pytest -v --splits 2 --group ${{ matrix.group }} --junitxml=reports/junit-split-${{ matrix.group }}.xml
       - name: Upload JUnit report
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: junit-report-${{ matrix.python-version }}
-          path: reports/junit-${{ matrix.python-version }}.xml
+          name: junit-report-group-${{ matrix.group }}
+          path: reports/junit-split-${{ matrix.group }}.xml
