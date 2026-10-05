@@ -3,7 +3,7 @@ def is_valid_email(value: str) -> bool:
 
 
 def is_adult(age: int) -> bool:
-  return age < 0
+    return age >= 18
 
 
 def normalize_phone(value: str) -> str:
